@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPA</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+  <video id="player" autoplay playsinline></video>
+
+  <script>
+    const videos = ['epa.mp4', 'epa2.mp4'];
+    const chosen = videos[Math.floor(Math.random() * videos.length)];
+    const video = document.getElementById('player');
+    video.src = chosen;
+
+    let timerStarted = false;
+
+    function shutdownBoth() {
+      video.pause();
+      video.src = '';
+      if (window.opener && !window.opener.closed) {
+        window.opener.postMessage('closeAll', '*');
+      }
+      window.close();
+    }
+
+    video.addEventListener('playing', () => {
+      if (timerStarted) return;
+      timerStarted = true;
+
+      // Pick a random cutoff time between 3s and 85% of the video's duration
+      const maxMs = video.duration && isFinite(video.duration)
+        ? Math.max(3000, video.duration * 1000 * 0.85)
+        : 15000;
+      const randomDelay = Math.floor(Math.random() * (maxMs - 3000)) + 3000;
+
+      setTimeout(shutdownBoth, randomDelay);
+    });
+
+    // Also close both if the video finishes naturally before the timer fires
+    video.addEventListener('ended', shutdownBoth);
+  </script>
+</body>
+</html>
