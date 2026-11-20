@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPA</title>
+  <style>
+    body {
+      margin: 0;
+      background: #141414;
+      color: #ff2a85;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .enter-btn {
+      border: 2px solid #ff2a85;
+      padding: 18px 36px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border-radius: 6px;
+      box-shadow: 0 0 25px rgba(255, 42, 133, 0.3);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    body:hover .enter-btn {
+      background: #ff2a85;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="enter-btn">Enter</div>
+
+  <script>
+    let popup = null;
+
+    document.body.addEventListener('click', () => {
+      if (popup && !popup.closed) return;
+      popup = window.open('epa.html', 'epaWindow', 'width=1280,height=720');
+    });
+
+    // Listen for the signal from epa.html right before it closes
+    window.addEventListener('message', (e) => {
+      if (e.data === 'closeAll') {
+        window.open('', '_self', '');
+        window.close();
+        // Fallback if index.html was the root tab and browser prevents closing the entire app
+        window.location.replace('about:blank');
+      }
+    });
+  </script>
+</body>
+</html>
